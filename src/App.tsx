@@ -1,26 +1,53 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {useState, useEffect} from 'react'
+import  './App.css'
+interface ArrayData{
+  financialInstrumentId:number;
+  holdingPercentage:number;
+  name: string
+  score: number
+  ticker:string
+}
+const App = () => {
+  const [financialInstrument, setFinancialInstrument] = useState([])
+  const getFinancialInstrument = async ()=>{
+     await fetch('https://api.inspireinsight.com/api/tickers/1784/constituents?size=100').then((res) => res.json())
+     .then((json) => {
+         setFinancialInstrument(json.holdings)
+     })
+  }
+  useEffect(()=>{
+    getFinancialInstrument();
+  }, [])
 
-function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h2 className='heading'>FinancialInstrument List</h2>
+      <table>
+        <thead>
+           <tr> 
+                <th>Id</th>
+                <th>Percentage</th>
+                <th>Name</th>
+                <th>Score</th>
+                <th>Ticket</th>
+            </tr>
+        </thead>
+        <tbody>
+        {financialInstrument.map((data:ArrayData)=>{
+                return(
+                  <tr>
+                    <td>{data.financialInstrumentId}</td>
+                    <td>{data.holdingPercentage}</td>
+                    <td>{data.name}</td>
+                    <td>{data.score}</td>
+                    <td>{data.ticker}</td>
+                  </tr>
+                )
+            })}
+        </tbody>
+    </table>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
